@@ -1,249 +1,307 @@
-/**
- * ===================================
- * SCRIPT PRINCIPAL DEL PORTAFOLIO
- * ===================================
- * Este archivo maneja la funcionalidad interactiva del sitio web
- */
+// Introducción de la página
+let introCompleted = false;
 
-// Esperar a que el documento HTML esté completamente cargado
+// Textos para el efecto de escritura
+const typingTexts = [
+    "Bienvenido al futuro digital...",
+    "Donde los sueños se convierten en código...",
+    "Tu carrera tech comienza aquí..."
+];
+
+let currentTextIndex = 0;
+let currentCharIndex = 0;
+let isDeleting = false;
+
+function typeWriter() {
+    const typedTextElement = document.getElementById('typed-text');
+    const currentText = typingTexts[currentTextIndex];
+    
+    if (!isDeleting) {
+        typedTextElement.textContent = currentText.substring(0, currentCharIndex + 1);
+        currentCharIndex++;
+        
+        if (currentCharIndex === currentText.length) {
+            setTimeout(() => {
+                isDeleting = true;
+            }, 2000);
+        }
+    } else {
+        typedTextElement.textContent = currentText.substring(0, currentCharIndex - 1);
+        currentCharIndex--;
+        
+        if (currentCharIndex === 0) {
+            isDeleting = false;
+            currentTextIndex = (currentTextIndex + 1) % typingTexts.length;
+        }
+    }
+    
+    const typingSpeed = isDeleting ? 50 : 100;
+    setTimeout(typeWriter, typingSpeed);
+}
+
+function skipIntro() {
+    completeIntro();
+}
+
+function completeIntro() {
+    if (introCompleted) return;
+    
+    introCompleted = true;
+    const introScreen = document.getElementById('intro-screen');
+    const mainContent = document.getElementById('main-content');
+    
+    introScreen.classList.add('fade-out');
+    
+    setTimeout(() => {
+        introScreen.style.display = 'none';
+        mainContent.classList.remove('hidden');
+        mainContent.classList.add('visible');
+        document.body.style.overflow = 'auto';
+    }, 1000);
+}
+
+// Auto-completar introducción después de 6 segundos
+function autoCompleteIntro() {
+    setTimeout(() => {
+        if (!introCompleted) {
+            completeIntro();
+        }
+    }, 6000);
+}
+
+// Inicializar introducción
 document.addEventListener('DOMContentLoaded', function() {
+    // Ocultar scroll durante la introducción
+    document.body.style.overflow = 'hidden';
     
-    /**
-     * ===================================
-     * LOADER ÉPICO DE ENTRADA
-     * ===================================
-     * Controla la animación de entrada épica
-     */
+    // Iniciar efecto de escritura
+    setTimeout(() => {
+        typeWriter();
+    }, 1500);
     
-    const loader = document.getElementById('loader');
-    const body = document.body;
+    // Auto-completar introducción
+    autoCompleteIntro();
     
-    // Simular tiempo de carga y mostrar animación épica
-    setTimeout(function() {
-        loader.classList.add('fade-out');
-        body.classList.remove('loading');
-        
-        // Remover el loader del DOM después de la animación
-        setTimeout(function() {
-            loader.style.display = 'none';
-        }, 800);
-    }, 2500); // 2.5 segundos de animación épica
-    
-    
-    /**
-     * ===================================
-     * MANEJO DEL FORMULARIO DE CONTACTO
-     * ===================================
-     */
-    
-    // Obtener referencia al formulario de contacto por su ID
-    const contactoForm = document.getElementById('contacto-form');
-    
-    // Agregar un "escuchador" de eventos para cuando se envíe el formulario
-    contactoForm.addEventListener('submit', function(event) {
-        // Prevenir el comportamiento por defecto (recargar la página)
-        event.preventDefault();
-        
-        // Obtener los valores de los campos del formulario
-        const nombre = document.getElementById('nombre').value;
-        const correo = document.getElementById('correo').value;
-        const mensaje = document.getElementById('mensaje').value;
-        
-        // Validación básica: verificar que todos los campos estén llenos
-        if (nombre.trim() === '' || correo.trim() === '' || mensaje.trim() === '') {
-            alert('Por favor, completa todos los campos del formulario.');
-            return; // Detener la ejecución si hay campos vacíos
+    // Permitir saltar con Enter o Espacio
+    document.addEventListener('keydown', function(e) {
+        if ((e.key === 'Enter' || e.key === ' ') && !introCompleted) {
+            e.preventDefault();
+            completeIntro();
         }
-        
-        // Mostrar mensaje en la consola del navegador
-        console.log('Formulario enviado correctamente');
-        
-        // Opcional: Mostrar un mensaje de confirmación al usuario
-        alert('¡Gracias por tu mensaje! Te contactaré pronto.');
-        
-        // Limpiar el formulario después del envío
-        contactoForm.reset();
     });
+});
+
+// Chatbot functionality
+let chatbotVisible = false;
+
+function toggleChatbot() {
+    const chatbot = document.getElementById('chatbot');
+    chatbotVisible = !chatbotVisible;
     
-    
-    /**
-     * ===================================
-     * NAVEGACIÓN SUAVE (SMOOTH SCROLL)
-     ===================================
-     * Hace que al hacer clic en los enlaces del menú,
-     * la página se desplace suavemente hacia la sección
-     */
-    
-    // Obtener todos los enlaces del menú de navegación
-    const navLinks = document.querySelectorAll('.nav-menu a');
-    
-    // Agregar evento de clic a cada enlace
-    navLinks.forEach(function(link) {
-        link.addEventListener('click', function(event) {
-            // Obtener el destino del enlace (ej: #presentacion, #proyectos)
-            const href = this.getAttribute('href');
-            
-            // Verificar que el enlace sea una sección interna (empieza con #)
-            if (href.startsWith('#')) {
-                event.preventDefault(); // Prevenir el salto brusco
-                
-                // Buscar el elemento de la sección destino
-                const targetSection = document.querySelector(href);
-                
-                // Si la sección existe, desplazarse hacia ella suavemente
-                if (targetSection) {
-                    targetSection.scrollIntoView({
-                        behavior: 'smooth', // Desplazamiento suave
-                        block: 'start'      // Alinear al inicio de la sección
-                    });
-                    
-                    // Cerrar el menú hamburguesa en móviles después de hacer clic
-                    const navMenu = document.getElementById('nav-menu');
-                    const hamburger = document.getElementById('hamburger');
-                    if (navMenu && navMenu.classList.contains('active')) {
-                        navMenu.classList.remove('active');
-                        hamburger.classList.remove('active');
-                    }
-                }
-            }
-        });
-    });
-    
-    
-    /**
-     * ===================================
-     * MENÚ HAMBURGUESA PARA MÓVILES
-     * ===================================
-     * Maneja la apertura y cierre del menú hamburguesa
-     */
-    
-    const hamburger = document.getElementById('hamburger');
-    const navMenu = document.getElementById('nav-menu');
-    
-    if (hamburger && navMenu) {
-        hamburger.addEventListener('click', function() {
-            hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
-        });
-        
-        // Cerrar el menú al hacer clic fuera de él
-        document.addEventListener('click', function(event) {
-            const isClickInsideNav = navMenu.contains(event.target);
-            const isClickOnHamburger = hamburger.contains(event.target);
-            
-            if (!isClickInsideNav && !isClickOnHamburger && navMenu.classList.contains('active')) {
-                navMenu.classList.remove('active');
-                hamburger.classList.remove('active');
-            }
-        });
-        
-        // Cerrar el menú al redimensionar la ventana si vuelve a ser grande
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > 768) {
-                navMenu.classList.remove('active');
-                hamburger.classList.remove('active');
-            }
-        });
+    if (chatbotVisible) {
+        chatbot.classList.remove('chatbot-hidden');
+        chatbot.classList.add('chatbot-visible');
+    } else {
+        chatbot.classList.remove('chatbot-visible');
+        chatbot.classList.add('chatbot-hidden');
     }
+}
+
+function sendMessage(message) {
+    const messagesContainer = document.getElementById('chatbot-messages');
     
+    // Add user message
+    const userMessage = document.createElement('div');
+    userMessage.className = 'user-message';
+    userMessage.textContent = message;
+    messagesContainer.appendChild(userMessage);
     
-    /**
-     * ===================================
-     * EFECTO DE SCROLL EN LA NAVEGACIÓN
-     * ===================================
-     * Cambiar el estilo de la barra de navegación cuando
-     * el usuario hace scroll hacia abajo
-     */
-    
-    let lastScroll = 0;
-    
-    window.addEventListener('scroll', function() {
-        const currentScroll = window.pageYOffset;
-        const navbar = document.querySelector('.navbar');
+    // Generate bot response
+    setTimeout(() => {
+        const botMessage = document.createElement('div');
+        botMessage.className = 'bot-message';
+        botMessage.innerHTML = getBotResponse(message);
+        messagesContainer.appendChild(botMessage);
         
-        // Agregar sombra más pronunciada cuando se hace scroll
-        if (currentScroll > 50) {
-            navbar.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.5)';
+        // Scroll to bottom
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }, 500);
+    
+    // Scroll to bottom
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+function getBotResponse(message) {
+    const responses = {
+        '¿Qué es Talento Tech?': `
+            💡 <strong>Talento Tech Oriente</strong> es un programa de formación <strong>gratuita</strong> que impulsa el desarrollo de habilidades digitales en jóvenes y adultos del oriente colombiano.
+            <br><br>
+            🎯 A través de bootcamps intensivos, brindamos herramientas prácticas para ingresar al mundo laboral tecnológico con metodología práctica y conexión directa con empresas.
+        `,
+        '¿Qué bootcamps hay?': `
+            🧑‍💻 Tenemos 4 bootcamps disponibles:
+            <br><br>
+            🌐 <strong>Desarrollo Web Frontend</strong><br>
+            📊 <strong>Análisis de Datos</strong><br>
+            🔒 <strong>Ciberseguridad</strong><br>
+            🤖 <strong>Inteligencia Artificial</strong><br>
+            <br>
+            ¿Te interesa información detallada de alguno? 😊
+        `,
+        'Info del bootcamp Frontend': `
+            📘 <strong>Desarrollo Web Frontend</strong>
+            <br><br>
+            📅 <strong>Duración:</strong> 6 meses<br>
+            🕕 <strong>Horario:</strong> Lunes a viernes, 6:00 p.m. a 9:00 p.m.<br>
+            💻 <strong>Modalidad:</strong> Presencial y Virtual<br>
+            🎓 <strong>Certificación:</strong> Incluida<br>
+            <br>
+            <strong>✅ Requisitos:</strong><br>
+            • Ser mayor de 16 años<br>
+            • Residir en la región Oriente<br>
+            • Computadora con internet<br>
+            • Disponibilidad de tiempo completo
+        `,
+        'Número de inscripciones': `
+            📞 <strong>Teléfono de inscripciones:</strong><br>
+            <a href="tel:+573200000000" style="color: #2563eb; font-weight: bold;">+57 320 000 0000</a>
+            <br><br>
+            📅 Horario de atención: Lunes a viernes de 8:00 AM a 6:00 PM
+        `,
+        'Link web oficial': `
+            🔗 <strong>Página oficial:</strong><br>
+            <a href="https://talentotech.gov.co" target="_blank" style="color: #2563eb; font-weight: bold;">talentotech.gov.co</a>
+            <br><br>
+            Allí encontrarás información completa sobre todos nuestros programas y convocatorias 📚
+        `,
+        'Hablar con humano': `
+            👨‍💼 Te conectaré con uno de nuestros asesores humanos
+            <br><br>
+            <a href="https://wa.me/573200000000?text=Hola,%20necesito%20hablar%20con%20un%20asesor%20sobre%20Talento%20Tech%20Oriente" 
+               target="_blank" 
+               style="background: #25d366; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; display: inline-block; margin-top: 10px; font-weight: 500;">
+               💬 Abrir WhatsApp
+            </a>
+            <br><br>
+            <small style="color: #64748b;">Nuestros asesores están disponibles de lunes a viernes de 8:00 AM a 6:00 PM</small>
+        `
+    };
+    
+    return responses[message] || '🤔 Lo siento, no entiendo tu pregunta. Por favor selecciona una de las opciones disponibles para poder ayudarte mejor.';
+}
+
+// Modal functionality
+function mostrarInscripcion() {
+    document.getElementById('modal-inscripcion').style.display = 'block';
+}
+
+function cerrarModal() {
+    document.getElementById('modal-inscripcion').style.display = 'none';
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('modal-inscripcion');
+    if (event.target === modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Navbar functionality
+function initNavbar() {
+    const navbar = document.querySelector('.navbar');
+    const mobileToggle = document.getElementById('mobile-toggle');
+    const mobileOverlay = document.getElementById('mobile-overlay');
+    const scrollProgress = document.querySelector('.scroll-progress');
+    
+    // Scroll effects
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPercentage = (scrolled / maxScroll) * 100;
+        
+        // Update scroll progress
+        scrollProgress.style.width = scrollPercentage + '%';
+        
+        // Add scrolled class to navbar
+        if (scrolled > 50) {
+            navbar.classList.add('scrolled');
         } else {
-            navbar.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.2)';
+            navbar.classList.remove('scrolled');
         }
-        
-        lastScroll = currentScroll;
     });
     
+    // Mobile menu toggle
+    mobileToggle.addEventListener('click', () => {
+        mobileToggle.classList.toggle('active');
+        mobileOverlay.classList.toggle('active');
+        document.body.style.overflow = mobileOverlay.classList.contains('active') ? 'hidden' : 'auto';
+    });
     
-    /**
-     * ===================================
-     * FUNCIONALIDAD DE BOTONES "VER MÁS"
-     * ===================================
-     * Manejar los clics en los botones de proyectos
-     */
+    // Close mobile menu when clicking on overlay
+    mobileOverlay.addEventListener('click', (e) => {
+        if (e.target === mobileOverlay) {
+            closeMobileMenu();
+        }
+    });
     
-    // Obtener todos los botones "Ver más" de los proyectos
-    const verMasButtons = document.querySelectorAll('.btn-ver-mas');
-    
-    // Agregar evento de clic a cada botón
-    verMasButtons.forEach(function(button, index) {
-        button.addEventListener('click', function() {
-            // Obtener el título del proyecto (está en el h3 de la tarjeta)
-            const proyectoCard = this.closest('.proyecto-card');
-            const proyectoTitle = proyectoCard.querySelector('h3').textContent;
-            
-            // Mostrar información en la consola
-            console.log(`Proyecto seleccionado: ${proyectoTitle}`);
-            
-            // Opcional: Mostrar alerta al usuario
-            // En una aplicación real, aquí podrías redirigir a una página de detalle
-            alert(`Has seleccionado el proyecto: ${proyectoTitle}\n\nEn una versión real, esto te llevaría a la página de detalles del proyecto.`);
+    // Close mobile menu when clicking on links
+    const mobileLinks = document.querySelectorAll('.mobile-nav-link, .mobile-nav-cta');
+    mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            closeMobileMenu();
         });
     });
     
-    
-    /**
-     * ===================================
-     * EFECTO DE ANIMACIÓN AL HACER SCROLL
-     * ===================================
-     * Hacer que las tarjetas aparezcan con animación
-     * cuando el usuario hace scroll hacia ellas
-     */
-    
-    // Función para verificar si un elemento es visible en la pantalla
-    function isElementInViewport(element) {
-        const rect = element.getBoundingClientRect();
-        return (
-            rect.top >= 0 &&
-            rect.left >= 0 &&
-            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-        );
+    function closeMobileMenu() {
+        mobileToggle.classList.remove('active');
+        mobileOverlay.classList.remove('active');
+        document.body.style.overflow = 'auto';
     }
     
-    // Función para agregar animación a los elementos
-    function animateOnScroll() {
-        // Seleccionar todas las tarjetas
-        const cards = document.querySelectorAll('.experiencia-card, .habilidad-card, .logro-card, .hobby-card, .proyecto-card');
-        
-        cards.forEach(function(card) {
-            // Si la tarjeta está visible y no tiene la clase 'animated', agregarla
-            if (isElementInViewport(card) && !card.classList.contains('animated')) {
-                card.classList.add('animated');
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(30px)';
+    // Close mobile menu on escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mobileOverlay.classList.contains('active')) {
+            closeMobileMenu();
+        }
+    });
+}
+
+// Enhanced smooth scrolling for navigation links
+function initSmoothScrolling() {
+    const links = document.querySelectorAll('a[href^="#"]');
+    
+    links.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href');
+            const targetSection = document.querySelector(targetId);
+            
+            if (targetSection) {
+                const headerHeight = document.querySelector('header').offsetHeight;
+                const offsetTop = targetSection.offsetTop - headerHeight - 20;
                 
-                // Animar la aparición
-                setTimeout(function() {
-                    card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, 100);
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: 'smooth'
+                });
+                
+                // Add active state animation
+                const navLinks = document.querySelectorAll('.nav-link');
+                navLinks.forEach(navLink => navLink.classList.remove('active'));
+                this.classList.add('active');
             }
         });
-    }
+    });
+}
+
+// Initialize all navbar functionality
+document.addEventListener('DOMContentLoaded', function() {
+    initNavbar();
+    initSmoothScrolling();
     
-    // Ejecutar la animación cuando se hace scroll
-    window.addEventListener('scroll', animateOnScroll);
-    
-    // Ejecutar una vez al cargar la página para animar elementos ya visibles
-    animateOnScroll();
-    
+    // Initialize chatbot as hidden
+    const chatbot = document.getElementById('chatbot');
+    chatbot.classList.add('chatbot-hidden');
 });
