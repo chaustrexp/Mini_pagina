@@ -398,31 +398,7 @@
         </section>
     </main>
 
-    <!-- Chatbot "Asesor TalentoTech" -->
-    <div id="chatbot-container">
-        <div id="chatbot-toggle" onclick="toggleChatbot()">
-            🤖
-        </div>
-        <div id="chatbot" class="chatbot-hidden">
-            <div class="chatbot-header">
-                <h3>🤖 TechBot - Asesor TalentoTech</h3>
-                <button onclick="toggleChatbot()" class="close-btn">×</button>
-            </div>
-            <div id="chatbot-messages" class="chatbot-messages">
-                <div class="bot-message">
-                    👋 ¡Hola! Soy TechBot, tu asistente de Talento Tech Oriente. ¿Sobre qué te gustaría saber hoy?
-                </div>
-            </div>
-            <div class="chatbot-options">
-                <button onclick="sendMessage('¿Qué es Talento Tech?')">¿Qué es Talento Tech?</button>
-                <button onclick="sendMessage('¿Qué bootcamps hay?')">¿Qué bootcamps hay?</button>
-                <button onclick="sendMessage('Info del bootcamp Frontend')">Info Desarrollo Web Frontend</button>
-                <button onclick="sendMessage('Número de inscripciones')">📞 Teléfono inscripciones</button>
-                <button onclick="sendMessage('Link web oficial')">🔗 Página oficial</button>
-                <button onclick="sendMessage('Hablar con humano')">👨‍💼 Hablar con humano</button>
-            </div>
-        </div>
-    </div>
+
 
     <!-- Modal de Inscripción -->
     <div id="modal-inscripcion" class="modal">
@@ -440,39 +416,31 @@
 
     <script src="script.js"></script>
     
-    <!-- Chatbase Integration -->
-    <script>
-        (function(){
-            if(!window.chatbase||window.chatbase("getState")!=="initialized"){
-                window.chatbase=(...arguments)=>{
-                    if(!window.chatbase.q){
-                        window.chatbase.q=[]
-                    }
-                    window.chatbase.q.push(arguments)
-                };
-                window.chatbase=new Proxy(window.chatbase,{
-                    get(target,prop){
-                        if(prop==="q"){
-                            return target.q
-                        }
-                        return(...args)=>target(prop,...args)
-                    }
-                })
-            }
-            const onLoad=function(){
-                const script=document.createElement("script");
-                script.src="https://www.chatbase.co/embed.min.js";
-                script.id="zCujemLVqFR0PwWbTuPPU";
-                script.domain="www.chatbase.co";
-                document.body.appendChild(script)
-            };
-            if(document.readyState==="complete"){
-                onLoad()
-            }else{
-                window.addEventListener("load",onLoad)
-            }
-        })();
-    </script>
+    <!-- Vapi AI Voice Widget -->
+    <vapi-widget
+        public-key="d4c36367-52d4-4a8a-bd7b-80fafc45fc03"
+        assistant-id="93a304f6-1914-42e6-8895-a38b80f43086"
+        mode="voice"
+        theme="dark"
+        base-bg-color="#000000"
+        accent-color="#14B8A6"
+        cta-button-color="#000000"
+        cta-button-text-color="#ffffff"
+        border-radius="large"
+        size="full"
+        position="bottom-right"
+        title="TALK WITH AI"
+        start-button-text="Start"
+        end-button-text="End Call"
+        chat-first-message="Hey, How can I help you today?"
+        chat-placeholder="Type your message..."
+        voice-show-transcript="true"
+        consent-required="true"
+        consent-title="Terms and conditions"
+        consent-content="By clicking "Agree," and each time I interact with this AI agent, I consent to the recording, storage, and sharing of my communications with third-party service providers, and as otherwise described in our Terms of Service."
+        consent-storage-key="vapi_widget_consent">
+    </vapi-widget>
+    <script src="https://unpkg.com/@vapi-ai/client-sdk-react/dist/embed/widget.umd.js" async type="text/javascript"></script>
     
     </div> <!-- Cierre de main-content -->
 </body>

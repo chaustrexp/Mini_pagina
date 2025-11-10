@@ -91,105 +91,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Chatbot functionality
-let chatbotVisible = false;
-
-function toggleChatbot() {
-    const chatbot = document.getElementById('chatbot');
-    chatbotVisible = !chatbotVisible;
-    
-    if (chatbotVisible) {
-        chatbot.classList.remove('chatbot-hidden');
-        chatbot.classList.add('chatbot-visible');
-    } else {
-        chatbot.classList.remove('chatbot-visible');
-        chatbot.classList.add('chatbot-hidden');
-    }
-}
-
-function sendMessage(message) {
-    const messagesContainer = document.getElementById('chatbot-messages');
-    
-    // Add user message
-    const userMessage = document.createElement('div');
-    userMessage.className = 'user-message';
-    userMessage.textContent = message;
-    messagesContainer.appendChild(userMessage);
-    
-    // Generate bot response
-    setTimeout(() => {
-        const botMessage = document.createElement('div');
-        botMessage.className = 'bot-message';
-        botMessage.innerHTML = getBotResponse(message);
-        messagesContainer.appendChild(botMessage);
-        
-        // Scroll to bottom
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }, 500);
-    
-    // Scroll to bottom
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-}
-
-function getBotResponse(message) {
-    const responses = {
-        '¿Qué es Talento Tech?': `
-            💡 <strong>Talento Tech Oriente</strong> es un programa de formación <strong>gratuita</strong> que impulsa el desarrollo de habilidades digitales en jóvenes y adultos del oriente colombiano.
-            <br><br>
-            🎯 A través de bootcamps intensivos, brindamos herramientas prácticas para ingresar al mundo laboral tecnológico con metodología práctica y conexión directa con empresas.
-        `,
-        '¿Qué bootcamps hay?': `
-            🧑‍💻 Tenemos 4 bootcamps disponibles:
-            <br><br>
-            🌐 <strong>Desarrollo Web Frontend</strong><br>
-            📊 <strong>Análisis de Datos</strong><br>
-            🔒 <strong>Ciberseguridad</strong><br>
-            🤖 <strong>Inteligencia Artificial</strong><br>
-            <br>
-            ¿Te interesa información detallada de alguno? 😊
-        `,
-        'Info del bootcamp Frontend': `
-            📘 <strong>Desarrollo Web Frontend</strong>
-            <br><br>
-            📅 <strong>Duración:</strong> 6 meses<br>
-            🕕 <strong>Horario:</strong> Lunes a viernes, 6:00 p.m. a 9:00 p.m.<br>
-            💻 <strong>Modalidad:</strong> Presencial y Virtual<br>
-            🎓 <strong>Certificación:</strong> Incluida<br>
-            <br>
-            <strong>✅ Requisitos:</strong><br>
-            • Ser mayor de 16 años<br>
-            • Residir en la región Oriente<br>
-            • Computadora con internet<br>
-            • Disponibilidad de tiempo completo
-        `,
-        'Número de inscripciones': `
-            📞 <strong>Teléfono de inscripciones:</strong><br>
-            <a href="tel:+573200000000" style="color: #2563eb; font-weight: bold;">+57 320 000 0000</a>
-            <br><br>
-            📅 Horario de atención: Lunes a viernes de 8:00 AM a 6:00 PM
-        `,
-        'Link web oficial': `
-            🔗 <strong>Página oficial:</strong><br>
-            <a href="https://talentotech.gov.co" target="_blank" style="color: #2563eb; font-weight: bold;">talentotech.gov.co</a>
-            <br><br>
-            Allí encontrarás información completa sobre todos nuestros programas y convocatorias 📚
-        `,
-        'Hablar con humano': `
-            👨‍💼 Te conectaré con uno de nuestros asesores humanos
-            <br><br>
-            <a href="https://wa.me/573200000000?text=Hola,%20necesito%20hablar%20con%20un%20asesor%20sobre%20Talento%20Tech%20Oriente" 
-               target="_blank" 
-               style="background: #25d366; color: white; padding: 12px 20px; text-decoration: none; border-radius: 8px; display: inline-block; margin-top: 10px; font-weight: 500;">
-               💬 Abrir WhatsApp
-            </a>
-            <br><br>
-            <small style="color: #64748b;">Nuestros asesores están disponibles de lunes a viernes de 8:00 AM a 6:00 PM</small>
-        `
-    };
-    
-    return responses[message] || '🤔 Lo siento, no entiendo tu pregunta. Por favor selecciona una de las opciones disponibles para poder ayudarte mejor.';
-}
-
 // Modal functionality
 function mostrarInscripcion() {
     document.getElementById('modal-inscripcion').style.display = 'block';
@@ -300,8 +201,4 @@ function initSmoothScrolling() {
 document.addEventListener('DOMContentLoaded', function() {
     initNavbar();
     initSmoothScrolling();
-    
-    // Initialize chatbot as hidden
-    const chatbot = document.getElementById('chatbot');
-    chatbot.classList.add('chatbot-hidden');
 });
